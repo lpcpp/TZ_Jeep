@@ -1,0 +1,15 @@
+<html>
+	<head><title>login page</title></head>
+	<body>
+	     <form action='.' method="POST">
+			 {% if err_msg %}
+				 {{ err_msg }}</br>
+			 {% end %}
+
+			 {% module xsrf_form_html() %}
+			 username:<input type='text' name='username' value="{{ username }}"/></br>
+			 password:<input type='password' name='password' /></br>
+			 <input type='submit' value='login'/>
+		 </form>
+	</body>
+</html>

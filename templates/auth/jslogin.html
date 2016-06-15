@@ -1,0 +1,34 @@
+<html>
+	<head><title>login page</title></head>
+	<script type="text/javascript" src="//misc.360buyimg.com/jdf/lib/jquery-1.6.4.js"></script>
+	<body>
+	     <form id='jslogin'>
+			 username:<input type='text' name='username' /></br>
+			 password:<input type='password' name='password' /></br>
+			 <input type='button' id='js_login_btn' value='jslogin'/>
+		 </form>
+
+
+	<script>
+	$('#js_login_btn').click(function(){
+			var data = $("#jslogin").serialize();
+
+			$.ajax({
+				type: 'POST',
+				url: '/jslogin/' ,
+				data: data,
+				dataType: 'json',
+				success:function(result){
+				     if(result.status=='ok') {
+					    window.location.href='/';
+						}else{
+						   alert('username does not match password');
+						}
+				}
+
+            });
+	});
+
+	</script>
+	</body>
+</html>

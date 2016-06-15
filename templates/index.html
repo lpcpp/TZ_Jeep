@@ -1,0 +1,27 @@
+<html>
+    <head>
+	<script>
+	function getCookie(name) {
+		var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+		if(arr=document.cookie.match(reg))
+			return (arr[2]);
+		else
+			return null;
+		}
+
+		function delCookie(){
+		name='user';
+		var exp = new Date();
+		exp.setTime(exp.getTime() - 1);
+		var cval=getCookie(name);
+		if(cval!=null)
+			document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+            window.location.href='/login/';
+		}
+	</script>
+	<title>home page</title>
+	</head>
+	<body>
+        <input type='button' id='logout' value='logout' onclick='delCookie()' />
+	</body>
+</html>

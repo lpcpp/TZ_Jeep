@@ -1,0 +1,24 @@
+<html>
+	<head><title>register page</title></head>
+	<body>
+	     <form action='.' method="POST">
+			 {% module xsrf_form_html() %}
+			 card_id:<input type='text' name='card_id' /></br>
+			 username:<input type='text' name='username' /></br>
+			 password:<input type='password' name='password' /></br>
+			 repeat password:<input type='password' name='password1' /></br>
+			 age:<input type='text' name='age' /></br>
+			 sex:<select>
+				 <option value='0'>Male</option>
+				 <option value='1'>Female</option>
+				 <option value='2'>Other</option>
+			 </select></br>
+			 department:<input type='text' name='department' /></br>
+			 postion:<input type='text' name='position' /></br>
+			 mobile:<input type='text' name='mobile' /></br>
+			 emergency_contact:<input type='text' name='emergency_contact' /></br>
+			 email:<input type='text' name='email' /></br>
+			 <input type='submit' value='register'/>
+		 </form>
+	</body>
+</html>
