@@ -7,10 +7,22 @@ import json
 
 class RegisterHandler(BaseHandler):
     def get(self):
-        self.render('auth/register.html')
+        err_msg = ''
+        username = ''
+        age = ''
+        sex = ''
+        department = ''
+        position = ''
+        mobile = ''
+        emergency_contact = ''
+        email = ''
+        params = locals()
+        params.pop('self')
+        print params
+
+        self.render('auth/register.html', **params)
 
     def post(self):
-        card_id = self.get_argument('card_id', '')
         username = self.get_argument('username', '')
         password = self.get_argument('password', '')
         password1 = self.get_argument('password1', '')
@@ -22,16 +34,29 @@ class RegisterHandler(BaseHandler):
         emergency_contact = self.get_argument('emergency_contact', '')
         email = self.get_argument('email', '')
 
+        if not (username and password and password1 and age and sex and department and position and mobile and emergency_contact and email):
+            err_msg = 'lack of argument'
+            params = locals()
+            params.pop('self')
+            self.render('auth/register.html', **params)
+            return
+
         if password != password1:
-            self.write('password input do not match twice')
+            err_msg = 'password input do not match twice'
+            params = locals()
+            params.pop('self')
+            self.render('auth/register.html', **params)
             return
 
         user = dao.get_user(username=username)
         if user:
-            self.write('user already exist')
+            err_msg = 'user already exist'
+            params = locals()
+            params.pop('self')
+            self.render('auth/register.html', **params)
             return
 
-        dao.add_user(card_id, username, password, age, sex, department, position, mobile, emergency_contact, email)
+        dao.add_user(username, password, age, sex, department, position, mobile, emergency_contact, email)
         self.redirect('/login/')
 
 

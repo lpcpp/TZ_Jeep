@@ -1,8 +1,9 @@
 from auth.models import User
-from common.utils import md5
+from common.utils import md5, make_card_id
 
 
-def add_user(card_id, username, password, age, sex, department, position, mobile, emergency_contact, email):
+def add_user(username, password, age, sex, department, position, mobile, emergency_contact, email):
+    card_id = str(make_card_id())
     user = User(
         card_id=card_id,
         username=username,

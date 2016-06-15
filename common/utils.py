@@ -29,5 +29,5 @@ def make_card_id():
     return new_id
 
 if __name__ == "__main__":
-    print md5('2222')
+    # print md5('2222')
     make_card_id()

@@ -1,8 +1,8 @@
 # -*-coding: utf-8 -*-
 
-MALE = 0      # 男性
-FEMALE = 1    # 女性
-OTHER = 2     # 其他性别
+MALE = 1      # 男性
+FEMALE = 2    # 女性
+OTHER = 3     # 其他性别
 
 SEX_LIST = [MALE, FEMALE, OTHER]    # 性别列表
 
