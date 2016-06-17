@@ -1,0 +1,31 @@
+<html>
+	<head><title>register page</title></head>
+	<body>
+	    {% if err_msg %}
+	       {{ err_msg }}
+		{% end %}
+	     <form action='.' method="POST">
+			 {% module xsrf_form_html() %}
+			 username:<input type='text' name='username' value="{{ username }}"/></br>
+			 password:<input type='password' name='password' /></br>
+			 repeat password:<input type='password' name='password1' /></br>
+			 age:<input type='text' name='age'value="{{ age }}" /></br>
+			 sex:<select name='sex'>
+				 <option value='1'>Male</option>
+				 <option value='2'>Female</option>
+				 <option value='3'>Other</option>
+			 </select></br>
+			 department:<input type='text' name='department'value="{{ department }}" /></br>
+			 postion:<input type='text' name='position' value="{{ position }}"/></br>
+			 mobile:<input type='text' name='mobile' value="{{ mobile }}"/></br>
+			 emergency_contact:<input type='text' name='emergency_contact' value="{{ emergency_contact }}"/></br>
+			 email:<input type='text' name='email' value="{{ email }}" /></br>
+			 perm:<select name='perm'>
+				 {% for p in perm_list %}
+					 <option value={{p}}>{{ p }}</option>
+				 {% end %}
+			 </select><br/>
+			 <input type='submit' value='add'/>
+		 </form>
+	</body>
+</html>

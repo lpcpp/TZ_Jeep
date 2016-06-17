@@ -2,6 +2,7 @@
 from base import BaseHandler
 from common.utils import md5
 from auth import dao
+from auth import enums
 import json
 
 
@@ -79,6 +80,9 @@ class LoginHandler(BaseHandler):
         if not user or user.password != md5(password):
             err_msg = 'username does not match password'
             self.render('auth/login.html', err_msg=err_msg, username=username)
+            return
+        if not user.status == enums.USER_STATUS_NORMAL:
+            self.write('your acccount is checking')
             return
 
         self.set_cookie('user', user.username)
