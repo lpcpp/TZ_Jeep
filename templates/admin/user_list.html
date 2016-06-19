@@ -1,9 +1,30 @@
 <html>
-	<head><title>login page</title></head>
+	<head><title>admin page</title></head>
 	<script type="text/javascript" src="//misc.360buyimg.com/jdf/lib/jquery-1.6.4.js"></script>
 	<body>
-	<a href='/admin/add_user/' target='blank'>增加用户</a>
+	<a href='/admin/add_user/' target='blank'>增加用户</a></br>
 	    <table border='1px' cellspacing='0'>
+			<div>
+				<select class='sort'>
+					<option name='sort' value='create_time'>时间正序</option>
+					<option name='sort' value='-create_time'>时间倒序</option>
+					<option name='sort' value='age'>年龄正序</option>
+					<option name='sort' value='-age'>年龄倒序</option>
+				</select>
+				<select class='search'>
+					<option name='card_id' value='card_id'>工号</option>
+					<option name='username' value='username'>姓名</option>
+					<option name='mobile' value='mobile'>手机</option>
+					<option name='email' value='email'>邮箱</option>
+					<option name='perm' value='perm'>权限</option>
+					<option name='status' value='status'>状态</option>
+					<option name='department' value='deparment'>部门</option>
+					<option name='position' value='postion'>岗位</option>
+				</select>
+				<input type='text' class='search_vale'  name='search_value' />
+				<input type='button' class='sure' value='确定' />
+			</div>
+
 			<th>工号</th>
 			<th>姓名</th>
 			<th>年龄</th>
@@ -29,14 +50,24 @@
 				    <th>{{ user.email }}</th>
 				    <th>{{ user.perm }}</th>
 				    <th>{{ user_status_dict.get(user.status) }}</th>
-					<th><input type='button' class='check_user' value='审核通过'/></th>
+					{% if user.status == 2 %}
+						<th><input type='button' class='check_user' value='审核通过' name='pass'/><input type='button' class='check_user' value='审核不通过' name='nopass'/></th>
+					{% elif  user.status == 1 %}
+						<th><input type='button' class='check_user' value='禁用' name='forbid'/><input type='button' class='check_user' value='删除' name='delete'/></th>
+					{% elif  user.status == 4 %}
+						<th><input type='button' class='check_user' value='启用' name='active'/></th>
+					{% else %}
+					    <th></th>
+					{% end %}
 				</tr>
 		   {% end %}
 		</table>
 		    <script>
 	$('.check_user').click(function(){
-		var check_user = 'pass';
+		var check_user = $(this).attr("name");
+		console.log(name);
 		var card_obj = $(this).parent().siblings('.card_id');
+		console.log(card_obj);
 		var card_id = card_obj.html();
 
 		$.ajax({
@@ -48,12 +79,20 @@
 				if(result.status=='ok') {
 					window.location.href='/admin/';
 				}else{
-					alert('username does not match password');
+					alert('error');
 				}
 			}
 
 		});
 	});
+
+	$('.sure').click(function(){
+			var sort = $('.sort').val();
+			var search = $('.search').val();
+			var search_value = $('.search_value').val();
+				window.location.href='/admin/user_list/' + '?sort=' + sort + '&search=' + search + '&search_value=' + search_value;
+		}
+	);
 
 	</script>
 
