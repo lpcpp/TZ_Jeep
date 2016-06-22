@@ -6,27 +6,30 @@
 	    <table border='1px' cellspacing='0'>
 			<div>
 				<select class='sort'>
-					<option name='sort' value='create_time'>时间正序</option>
-					<option name='sort' value='-create_time'>时间倒序</option>
-					<option name='sort' value='age'>年龄正序</option>
-					<option name='sort' value='-age'>年龄倒序</option>
+					<option name='sort' value='create_time' {% if sort=="create_time" %} selected="selected" {% end %}>时间正序</option>
+					<option name='sort' value='-create_time' {% if sort =='-create_time' %} selected="selected"{% end %}>时间倒序</option>
+					<option name='sort' value='age' {% if sort == 'age' %} selected="selected" {% end %}>年龄正序</option>
+					<option name='sort' value='-age' {% if sort== '-age' %} selected="selected" {% end %}>年龄倒序</option>
 				</select>
 				<select class='search'>
-					<option name='card_id' value='card_id'>工号</option>
-					<option name='username' value='username'>姓名</option>
-					<option name='mobile' value='mobile'>手机</option>
-					<option name='email' value='email'>邮箱</option>
-					<option name='perm' value='perm'>权限</option>
-					<option name='status' value='status'>状态</option>
-					<option name='department' value='deparment'>部门</option>
-					<option name='position' value='postion'>岗位</option>
-				</select>
-				<input type='text' class='search_vale'  name='search_value' />
+					<option name='card_id' value='card_id' {% if search=='card_id' %} selected='selected' {% end%}>工号</option>
+					<option name='username' value='username'{% if search=='username' %} selected='selected' {% end %}>姓名</option>
+					<option name='mobile' value='mobile'{% if search=='mobile' %} selected='selected' {% end %}>手机</option>
+					<option name='email' value='email'{% if search=='email' %} selected='selected' {% end %}>邮箱</option>
+					<option name='perm' value='perm'{% if search=='perm' %} selected='selected' {% end %}>权限</option>
+					<option name='status' value='status'{% if search=='status' %} selected='selected' {% end %}>状态</option>
+					<option name='department' value='deparment'{% if search=='department' %} selected='selected' {% end %}>部门</option>
+					<option name='position' value='position'{% if search=='position' %} selected='selected' {% end %}>岗位</option>
+				</select> 
+				<input type='text' class='search_value'  name='search_value' value='{{ search_value}}' />
+				开始时间:<input type='text' class='start_time'  name='start_time' value='{{ start_time }}' />
+				结束时间:<input type='text' class='end_time'  name='end_time' value='{{ end_time }}' />
 				<input type='button' class='sure' value='确定' />
 			</div>
 
 			<th>工号</th>
 			<th>姓名</th>
+			<th>创建时间</th>
 			<th>年龄</th>
 			<th>性别</th>
 			<th>部门</th>
@@ -39,8 +42,9 @@
 			<th>操作</th>
 			{% for user in user_list %}
 			    <tr>
-				    <th class='card_id'>{{ user.card_id }}</th>
+					<th class='card_id'><a href="/admin/change_user_info/{{ user.card_id }}/">{{ user.card_id }}</a></th>
 				    <th>{{ user.username }}</th>
+				    <th>{{ user.create_time.strftime('%Y-%m-%d %H:%M:%S') }}</th>
 				    <th>{{ user.age }}</th>
 				    <th>{{ user.sex }}</th>
 				    <th>{{ user.department }}</th>
@@ -90,7 +94,9 @@
 			var sort = $('.sort').val();
 			var search = $('.search').val();
 			var search_value = $('.search_value').val();
-				window.location.href='/admin/user_list/' + '?sort=' + sort + '&search=' + search + '&search_value=' + search_value;
+			var start_time = $('.start_time').val();
+			var end_time = $('.end_time').val();
+				window.location.href='/admin/user_list/' + '?sort=' + sort + '&search=' + search + '&search_value=' + search_value + '&start_time=' + start_time + '&end_time=' + end_time;
 		}
 	);
 

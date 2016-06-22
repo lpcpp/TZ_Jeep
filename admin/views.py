@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from base import AdminBaseHandler
 from common.utils import md5
 from admin import dao
@@ -47,30 +48,40 @@ class AdminUserListHandler(AdminBaseHandler):
         sort = self.get_argument('sort', '-created')
         search = self.get_argument('search', '')
         search_value = self.get_argument('search_value', '')
+        start_time = self.get_argument('start_time', '')
+        end_time = self.get_argument('end_time', '')
         admin_user = self.get_secure_cookie('admin_user')
         if not admin_user:
             self.redirect('/admin/login/')
             return
         user_list = auth_dao.get_user_list().order_by(sort)
-        if search == 'name':
-            user_list = user_list.filter(name=search_value)
-        elif search == 'card_id':
-            user_list = user_list.filter(card_id=search_value)
-        elif search == 'mobile':
-            user_list = user_list.filter(mobile=search_value)
-        elif search == 'email':
-            user_list = user_list.filter(email=search_value)
-        elif search == 'perm':
-            user_list = user_list.filter(perm=search_value)
-        elif search == 'status':
-            user_list = user_list.filter(status=search_value)
-        elif search == 'department':
-            user_list = user_list.filter(department=search_value)
-        elif search == 'position':
-            user_list = user_list.filter(position=search_value)
+        if search_value:
+            if search == 'username':
+                user_list = user_list.filter(username__contains=search_value)
+            elif search == 'card_id':
+                user_list = user_list.filter(card_id=search_value)
+            elif search == 'mobile':
+                user_list = user_list.filter(mobile=search_value)
+            elif search == 'email':
+                user_list = user_list.filter(email=search_value)
+            elif search == 'perm':
+                user_list = user_list.filter(perm=search_value)
+            elif search == 'status':
+                user_list = user_list.filter(status=search_value)
+            elif search == 'department':
+                user_list = user_list.filter(department=search_value)
+            elif search == 'position':
+                user_list = user_list.filter(position=search_value)
+        if start_time and end_time:
+            start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+            end_time = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
+
+            user_list = user_list.filter(create_time__gte=start_time).filter(create_time__lte=end_time)
 
         user_status_dict = auth_enums.USER_STATUS_DICT
-        self.render('admin/user_list.html', user_list=user_list, user_status_dict=user_status_dict)
+        params = locals()
+        params.pop('self')
+        self.render('admin/user_list.html', **params)
 
 
 class AddUserHandler(AdminBaseHandler):
@@ -153,3 +164,18 @@ class CheckUserHandler(AdminBaseHandler):
 
     def check_xsrf_cookie(self):
         return
+
+
+class ChangeUserInfoHandler(AdminBaseHandler):
+    def get(self, card_id):
+        err_msg = ''
+        user = auth_dao.get_user_by_card_id(card_id)
+        self.render('admin/user_info.html', user=user, err_msg=err_msg)
+
+    def post(self, card_id):
+        department = self.get_argument('department', '')
+        position = self.get_argument('position', '')
+        mobile = self.get_argument('mobile', '')
+
+        auth_dao.update_user_by_card_id(card_id, {'department': department, 'position': position, 'mobile': mobile})
+        self.redirect('/admin/user_list/')
