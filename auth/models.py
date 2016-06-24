@@ -20,6 +20,10 @@ class User(models.Document):
     perm = models.StringField(choices=enums.USER_PERMISSION_LIST, required=False)   # 权限
     status = models.IntField(choices=enums.USER_STATUS_LIST, default=enums.USER_STATUS_CHECK, required=True)  # 用户状态
 
+    meta = {
+        'indexes': ['card_id', 'username']
+    }
+
 
 class Transaction(models.Document):
     user_id = models.StringField()     # 创建者

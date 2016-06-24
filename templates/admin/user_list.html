@@ -66,13 +66,19 @@
 				</tr>
 		   {% end %}
 		</table>
+			第一页：<input type='button' class='page' value="{{ user_list.first_page }}" />
+			{% if user_list.previous_page %}上一页:<input type='button' class='page' value="{{ user_list.previous_page }}" /> {% end %}
+			当前页:<input type='button' class='page' value="{{ user_list.page }}" />
+			{% if user_list.next_page %} 下一页:<input type='button' class='page' value="{{ user_list.next_page }}" /> {% end %}
+			最后一页<input type='button' class='page' value="{{ user_list.last_page }}" />
 		    <script>
 	$('.check_user').click(function(){
 		var check_user = $(this).attr("name");
-		console.log(name);
-		var card_obj = $(this).parent().siblings('.card_id');
+		console.log(check_user);
+		var card_obj = $(this).parent().siblings('.card_id').children('a');
 		console.log(card_obj);
 		var card_id = card_obj.html();
+		console.log(card_id);
 
 		$.ajax({
 			type: 'POST',
@@ -96,11 +102,23 @@
 			var search_value = $('.search_value').val();
 			var start_time = $('.start_time').val();
 			var end_time = $('.end_time').val();
+			var page = $('.page').val();
 				window.location.href='/admin/user_list/' + '?sort=' + sort + '&search=' + search + '&search_value=' + search_value + '&start_time=' + start_time + '&end_time=' + end_time;
+		}
+	);
+
+	$('.page').click(function(){
+			var sort = $('.sort').val();
+			var search = $('.search').val();
+			var search_value = $('.search_value').val();
+			var start_time = $('.start_time').val();
+			var end_time = $('.end_time').val();
+			var page = $(this).val();
+				window.location.href='/admin/user_list/' + '?sort=' + sort + '&search=' + search + '&search_value=' + search_value + '&start_time=' + start_time + '&end_time=' + end_time + '&page=' + page;
 		}
 	);
 
 	</script>
 
-	</body>
+</body>
 </html>

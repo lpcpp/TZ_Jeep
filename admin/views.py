@@ -2,6 +2,7 @@
 from datetime import datetime
 from base import AdminBaseHandler
 from common.utils import md5
+from common.paginate import Page
 from admin import dao
 from auth import dao as auth_dao
 from auth import enums as auth_enums
@@ -50,6 +51,7 @@ class AdminUserListHandler(AdminBaseHandler):
         search_value = self.get_argument('search_value', '')
         start_time = self.get_argument('start_time', '')
         end_time = self.get_argument('end_time', '')
+        page = self.get_argument('page', '')
         admin_user = self.get_secure_cookie('admin_user')
         if not admin_user:
             self.redirect('/admin/login/')
@@ -77,6 +79,8 @@ class AdminUserListHandler(AdminBaseHandler):
             end_time = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
 
             user_list = user_list.filter(create_time__gte=start_time).filter(create_time__lte=end_time)
+
+        user_list = Page(user_list, items_per_page=5, page=page)
 
         user_status_dict = auth_enums.USER_STATUS_DICT
         params = locals()
@@ -158,6 +162,7 @@ class CheckUserHandler(AdminBaseHandler):
             self.write(json.dumps({'status': 'fail', 'err_msg': 'args mistake'}))
             return
 
+        print 1111, card_id
         auth_dao.update_user_by_card_id(card_id, {'status': status})
         self.write(json.dumps({'status': 'ok'}))
         return

@@ -2,8 +2,8 @@
 from base import BaseHandler
 from common.utils import md5
 from auth import dao
-from auth import enums
 import json
+import tornado.web
 
 
 class RegisterHandler(BaseHandler):
@@ -35,6 +35,8 @@ class RegisterHandler(BaseHandler):
         emergency_contact = self.get_argument('emergency_contact', '')
         email = self.get_argument('email', '')
 
+        print email
+
         if not (username and password and password1 and age and sex and department and position and mobile and emergency_contact and email):
             err_msg = 'lack of argument'
             params = locals()
@@ -57,6 +59,7 @@ class RegisterHandler(BaseHandler):
             self.render('auth/register.html', **params)
             return
 
+        print '8888'
         dao.add_user(username, password, age, sex, department, position, mobile, emergency_contact, email)
         self.redirect('/login/')
 
@@ -80,9 +83,6 @@ class LoginHandler(BaseHandler):
         if not user or user.password != md5(password):
             err_msg = 'username does not match password'
             self.render('auth/login.html', err_msg=err_msg, username=username)
-            return
-        if not user.status == enums.USER_STATUS_NORMAL:
-            self.write('your acccount is checking')
             return
 
         self.set_cookie('user', user.username)
@@ -119,3 +119,22 @@ class JsLoginHandler(BaseHandler):
 class LogoutHandler(BaseHandler):
     def get(self):
         pass
+
+
+class InfoHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        user = self.get_current_user()
+        print user
+        user = dao.get_user(user)
+        self.render('auth/user_info.html', user=user)
+
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        user = dao.get_user(user)
+        mobile = self.get_argument('mobile')
+        emergency_contact = self.get_argument('emergency_contact')
+
+        dao.update_user_by_card_id(user.card_id, {'mobile': mobile, 'emergency_contact': emergency_contact})
+        self.redirect('/member/')

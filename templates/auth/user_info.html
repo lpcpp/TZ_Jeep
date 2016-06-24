@@ -1,0 +1,17 @@
+<html>
+	<head><title>register page</title></head>
+	<body>
+	     <form action='.' method="POST">
+			 {% module xsrf_form_html() %}
+			 username:{{ user.username }}"</br>
+			 age:{{ user.age }} </br>
+			 sex:{{ user.sex }}</br>
+			 department:{{ user.department }}</br>
+			 postion:{{ user.position }}</br>
+			 mobile:<input type='text' name='mobile' value="{{ user.mobile }}"/></br>
+			 emergency_contact:<input type='text' name='emergency_contact' value="{{ user.emergency_contact }}"/></br>
+			 email:{{ user.email }}"</br>
+			 <input type='submit' value='change'/>
+		 </form>
+	</body>
+</html>
