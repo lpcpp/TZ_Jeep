@@ -138,3 +138,44 @@ class InfoHandler(BaseHandler):
 
         dao.update_user_by_card_id(user.card_id, {'mobile': mobile, 'emergency_contact': emergency_contact})
         self.redirect('/member/')
+
+
+class TransactionHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, action):
+        if action == 'list':
+            user = self.get_current_user()
+            user_id = dao.get_user(user).oid
+            transaction_list = dao.get_transaction_list_by_user_id(user_id)
+            self.render('auth/transaction.html', transaction_list=transaction_list)
+        elif action == 'add':
+            self.render('auth/add_transaction.html')
+
+    @tornado.web.authenticated
+    def post(self, action):
+        user = self.get_current_user()
+        user_id = dao.get_user(user).oid
+        ttype = int(self.get_argument('ttype'))
+        title = self.get_argument('title')
+        content = self.get_argument('content')
+        dao.add_transaction(user_id, ttype, title, content)
+        self.redirect('/auth/transaction/list/')
+
+
+class ReviewHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        user = self.get_current_user()
+        user_id = dao.get_user(user).oid
+        transaction_list = dao.get_transaction_list_by_status(user_id)
+        result = []
+        for transaction in transaction_list:
+            tmp = {}
+            user = dao.get_user_by_user_id(transaction.user_id)
+            tmp['id'] = str(transaction.id)
+            tmp['user'] = user.username
+            tmp['ttype'] = transaction.ttype
+            tmp['title'] = transaction.title
+            tmp['content'] = transaction.content
+            result.append(tmp)
+        self.render('auth/review_list.html', transaction_list=result)

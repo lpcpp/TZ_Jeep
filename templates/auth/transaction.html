@@ -1,0 +1,16 @@
+<html>
+	<head><title>my transaction</title></head>
+	<body>
+	<a href='/auth/transaction/add/'>创建申请</a></br>
+         {% for transaction in transaction_list %}
+		   类别:{% if transaction.ttype == 0 %}
+				 　 请假
+				 {% elif transaction.ttype == 1 %}
+					加薪
+				{% else %}
+					报销
+				{% end %}
+		 标题:{{ transaction.title }}  内容:{{ transaction.content }}</br>
+		 {% end %}
+	</body>
+</html>

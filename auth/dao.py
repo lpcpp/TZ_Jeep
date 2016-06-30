@@ -1,4 +1,4 @@
-from auth.models import User
+from auth.models import User, Transaction
 from common.utils import md5, make_card_id
 from auth import enums as auth_enums
 
@@ -45,6 +45,15 @@ def get_user_by_card_id(card_id):
     return user
 
 
+def get_user_by_user_id(user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except:
+        user = None
+
+    return user
+
+
 def get_user_list():
     user_list = User.objects.all()
     return user_list
@@ -58,3 +67,18 @@ def update_user_by_card_id(card_id, kwargs):
     user.save()
 
     return user
+
+
+def get_transaction_list_by_user_id(user_id):
+    transaction_list = Transaction.objects.filter(user_id=user_id)
+    return transaction_list
+
+
+def get_transaction_list_by_status(status):
+    transaction_list = Transaction.objects.filter(status=auth_enums.PROGRESS_CREATE)
+    return transaction_list
+
+
+def add_transaction(user_id, ttype, title, content):
+    t = Transaction(user_id=user_id, ttype=ttype, title=title, content=content)
+    t.save()

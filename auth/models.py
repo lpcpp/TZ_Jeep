@@ -20,6 +20,10 @@ class User(models.Document):
     perm = models.StringField(choices=enums.USER_PERMISSION_LIST, required=False)   # 权限
     status = models.IntField(choices=enums.USER_STATUS_LIST, default=enums.USER_STATUS_CHECK, required=True)  # 用户状态
 
+    @property
+    def oid(self):
+        return str(self.id)
+
     meta = {
         'indexes': ['card_id', 'username']
     }
@@ -31,3 +35,5 @@ class Transaction(models.Document):
     create_time = models.DateTimeField(default=datetime.datetime.now)  # 事务的创建时间
     title = models.StringField()   # 标题
     content = models.StringField()    # 内容
+    status = models.IntField(choices=enums.PROGRESS_LIST, default=enums.PROGRESS_CREATE)
+    reason = models.StringField()    # 驳回原因

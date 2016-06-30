@@ -1,0 +1,16 @@
+<html>
+	<head><title>register page</title></head>
+	<body>
+	     <form action='.' method="POST">
+			 {% module xsrf_form_html() %}
+			 类型:<select name='ttype'>
+				 <option value='0'>请假</option>
+				 <option value='1'>加薪</option>
+				 <option value='2'>报销</option>
+			 </select></br>
+			 标题:<input type='text' name='title' /></br>
+			 内容:<textarea name='content' rows="8" cols="30"></textarea></br>
+			 <input type='submit' value='submit'/>
+		 </form>
+	</body>
+</html>

@@ -13,4 +13,9 @@ class IndexHandler(BaseHandler):
         if user.status != auth_enums.USER_STATUS_NORMAL:
             self.write('your account is checking')
             return
-        self.render('index.html')
+
+        perm = ''
+        if user.perm == auth_enums.ACADEMY:
+            perm = auth_enums.ACADEMY
+
+        self.render('index.html', perm=perm)
