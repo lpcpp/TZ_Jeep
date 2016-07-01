@@ -2,6 +2,7 @@
 from base import BaseHandler
 from common.utils import md5
 from auth import dao
+from auth import enums
 import json
 import tornado.web
 
@@ -153,21 +154,42 @@ class TransactionHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self, action):
-        user = self.get_current_user()
-        user_id = dao.get_user(user).oid
-        ttype = int(self.get_argument('ttype'))
-        title = self.get_argument('title')
-        content = self.get_argument('content')
-        dao.add_transaction(user_id, ttype, title, content)
-        self.redirect('/auth/transaction/list/')
+        if action == 'update':
+            transaction_id = self.get_argument('transaction_id', '')
+            title = self.get_argument('title', '')
+            content = self.get_argument('content', '')
+            status = 1
+            attr = {'title': title, 'content': content, 'status': status}
+            dao.update_transaction_by_id(transaction_id, attr)
+            self.write(json.dumps({'status': 'ok'}))
+        else:
+            user = self.get_current_user()
+            user_id = dao.get_user(user).oid
+            ttype = int(self.get_argument('ttype'))
+            title = self.get_argument('title')
+            content = self.get_argument('content')
+            dao.add_transaction(user_id, ttype, title, content)
+            self.redirect('/auth/transaction/list/')
+
+    def check_xsrf_cookie(self):
+        return
 
 
 class ReviewHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user = self.get_current_user()
-        user_id = dao.get_user(user).oid
-        transaction_list = dao.get_transaction_list_by_status(user_id)
+        user = dao.get_user(user)
+        user_id = user.oid
+        print 'name:', user.to_json()
+        print 'perm:', user.perm
+        if user.perm == enums.ACADEMY:
+            status = 1
+        if user.perm == enums.BUSINESS:
+            status = 2
+        if user.perm == enums.CLUSTER:
+            status = 3
+        transaction_list = dao.get_transaction_list_by_status(status)
         result = []
         for transaction in transaction_list:
             tmp = {}
@@ -179,3 +201,19 @@ class ReviewHandler(BaseHandler):
             tmp['content'] = transaction.content
             result.append(tmp)
         self.render('auth/review_list.html', transaction_list=result)
+
+    def post(self):
+        transaction_id = self.get_argument('transaction_id', '')
+        action = self.get_argument('action', '')
+        reason = self.get_argument('reason', '')
+
+        if action == 'pass':
+            dao.update_transaction_by_id(transaction_id, {'status': 1})
+        if action == 'nopass':
+            dao.update_transaction_by_id(transaction_id, {'status': 0, 'reason': reason})
+
+        print '1111', action, transaction_id, reason
+        self.write(json.dumps({'status': 'ok'}))
+
+    def check_xsrf_cookie(self):
+        return

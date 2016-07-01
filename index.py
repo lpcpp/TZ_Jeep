@@ -17,5 +17,9 @@ class IndexHandler(BaseHandler):
         perm = ''
         if user.perm == auth_enums.ACADEMY:
             perm = auth_enums.ACADEMY
+        if user.perm == auth_enums.BUSINESS:
+            perm = auth_enums.BUSINESS
+        if user.perm == auth_enums.CLUSTER:
+            perm = auth_enums.CLUSTER
 
         self.render('index.html', perm=perm)

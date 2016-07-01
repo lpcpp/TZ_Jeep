@@ -75,10 +75,33 @@ def get_transaction_list_by_user_id(user_id):
 
 
 def get_transaction_list_by_status(status):
-    transaction_list = Transaction.objects.filter(status=auth_enums.PROGRESS_CREATE)
+    transaction_list = Transaction.objects.filter(status=status)
     return transaction_list
+
+
+def get_transaction_by_id(transaction_id):
+    transaction = Transaction.objects.get(id=transaction_id)
+    return transaction
 
 
 def add_transaction(user_id, ttype, title, content):
     t = Transaction(user_id=user_id, ttype=ttype, title=title, content=content)
     t.save()
+
+
+def update_transaction_by_id(transaction_id, attr):
+    transaction = get_transaction_by_id(transaction_id)
+    if 'status' in attr:
+        if attr['status']:
+            attr['status'] = transaction.status + 1
+        else:
+            attr['status'] = 0
+
+    for key, value in attr.iteritems():
+        transaction[key] = value
+
+    transaction.save()
+
+
+
+

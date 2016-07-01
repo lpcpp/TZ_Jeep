@@ -1,16 +1,47 @@
 <html>
 	<head><title>my transaction</title></head>
+	<script type="text/javascript" src="//misc.360buyimg.com/jdf/lib/jquery-1.6.4.js"></script>
 	<body>
 	<a href='/auth/transaction/add/'>创建申请</a></br>
-         {% for transaction in transaction_list %}
-		   类别:{% if transaction.ttype == 0 %}
-				 　 请假
-				 {% elif transaction.ttype == 1 %}
-					加薪
-				{% else %}
-					报销
-				{% end %}
-		 标题:{{ transaction.title }}  内容:{{ transaction.content }}</br>
+        {% for transaction in transaction_list %}
+		<div>
+	    {% if transaction.ttype == 0 %}
+		　  请假
+		{% elif transaction.ttype == 1 %}
+			加薪
+	    {% else %}
+	        报销
+ 		{% end %}
+		&nbsp;&nbsp;
+ 		{% if transaction.status == 0 %}
+     		标题:<input type='hidden'  class='transaction_id' name='transaction_id' value="{{ transaction.id }}" />
+     		标题:<input type='text' class='title' name='title' value="{{ transaction.title }}" />
+			状态:{{ transaction.status }}</br></br>
+			内容:<input type='text' class='content' name='content' value="{{ transaction.content }}" />
+			<td><input type='button' class='submit' value='重新提交'/>
+		{% else %}
+				标题:{{ transaction.title }}
+				状态:{{ transaction.status }}</br></br>
+				内容:{{ transaction.content }}
+		 {% end %}
+	 <hr>
 		 {% end %}
 	</body>
+	<script>
+        $('.submit').click(function(){
+		$.ajax({
+			type: 'POST',
+			url: '/auth/transaction/update/' ,
+			data: {'transaction_id': $('.transaction_id').val(), 'title': $('.title').val(), 'content': $('.content').val()},
+			dataType: 'json',
+			success:function(result){
+			if(result.status=='ok') {
+				window.location.href='/auth/transaction/list/';
+			}else{
+				alert('error');
+			}
+			}
+		});
+		});
+	</script>
 </html>

@@ -2,6 +2,10 @@
 	<head><title>my transaction</title></head>
 	<script type="text/javascript" src="//misc.360buyimg.com/jdf/lib/jquery-1.6.4.js"></script>
 	<body>
+	<div class='popup' style="display:none">
+		原因:<input id="reason" name="reason" />
+		<input type='button' class='review' name='nopass'/>
+	</div>
 		 <table border='1px' cellspacing='0'>
 			 <th>类型</th>
 			 <th>提交人</th>
@@ -10,7 +14,7 @@
 			 <th>操作</th>
          {% for transaction in transaction_list %}
 		 <tr>
-			 <td class='transaction_id' name='transaction_id' value={{transaction.get('id') }}>
+			 <td class='transaction_id' name="{{transaction.get('id') }}">
 		   {% if transaction.get('ttype') == 0 %}
 				 　 请假
 				 {% elif transaction.get('ttype') == 1 %}
@@ -22,32 +26,50 @@
 		<td> {{ transaction.get('user') }}</td>
 		<td>{{ transaction.get('title') }}</td>
 		<td>{{ transaction.get('content') }}</td>
-		<th><input type='button' class='review' value='审核通过' name='pass'/><input type='button' class='review' value='审核不通过' name='nopass'/></th>
+		<td><input type='button' class='review' value='审核通过' name='pass'/><input type='button' class='review' value='审核不通过' name='nopass'/></td>
 			</tr>
 		 {% end %}
 	 </table>
 	 <script>
 	$('.review').click(function(){
-	var check_user = $(this).attr("name");
-	var obj = $(this).parent().siblings('.transaction_id');
-	var obj_id = obj.value;
-	alert(obj_id);
+	var action = $(this).attr("name");
 
-	$.ajax({
-	type: 'POST',
-	url: '/auth/review/' ,
-	data: {'transaction_id': obj_id},
-	dataType: 'json',
-	success:function(result){
-	if(result.status=='ok') {
-	window.location.href='/auth/review_list/';
-	}else{
-	alert('error');
+	if(action=='nopass' && !$(".popup").attr('name')){
+		$(".popup").show();
+		var obj1 = $(this).parent().siblings('.transaction_id');
+		var obj_id1 = obj1.attr('name');
+		$(".popup").attr('name', obj_id1);
 	}
-	}
+	else{
+		var obj;
+		var obj_id;
+		var reason;
+		if(action=='pass'){
+			obj = $(this).parent().siblings('.transaction_id');
+			obj_id = obj.attr('name');
+			reason = $('#reason').val();
+		}else{
+			obj_id = $('.popup').attr('name');
+			action = 'nopass';
+			reason = $('#reason').val();
+		}
+		$.ajax({
+			type: 'POST',
+			url: '/auth/review_list/' ,
+			data: {'transaction_id': obj_id, 'action': action, 'reason': reason},
+			dataType: 'json',
+			success:function(result){
+				if(result.status=='ok') {
+					window.location.href='/auth/review_list/';
+				}else{
+					alert('error');
+				}
+			}
+
+			});
+     }
 
 	});
-																			});
 	 </script>
 	</body>
 </html>
