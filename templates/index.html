@@ -1,32 +1,69 @@
 <html>
     <head>
-	<script>
-	function getCookie(name) {
-		var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
-		if(arr=document.cookie.match(reg))
-			return (arr[2]);
-		else
-			return null;
-		}
-
-		function delCookie(){
-		name='user';
-		var exp = new Date();
-		exp.setTime(exp.getTime() - 1);
-		var cval=getCookie(name);
-		if(cval!=null)
-			document.cookie= name + "="+cval+";expires="+exp.toGMTString();
-            window.location.href='/login/';
-		}
-	</script>
 	<title>home page</title>
+	<style>
+    .item {
+	    width:48%;
+		height: 240px;
+		margin-left: 12px;
+		margin-bottom: 60px;
+		float: left;
+	}
+	.pic {
+		width: 100%;
+		height: 100%;
+		background-color: red;
+		clear: both;
+		border-radius: 15px;
+	}
+
+	.text {
+        line-height: 30px;
+		font-size: 40px;
+	}
+	.item2 {
+		width: 80%;
+		margin:0 auto;
+		margin-top:200px;
+	}
+	body{
+		text-align: center;
+	}
+
+    </style>
 	</head>
 	<body>
-        <input type='button' id='logout' value='logout' onclick='delCookie()' />
-		<a href='/member/'>我的信息</a>
-		<a href='/auth/transaction/list/'>我的申请</a>
-		{% if perm %}
-			<a href='/auth/review_list/'>审核列表</a>
-		{% end %}
-	</body>
+		<div class='item2'>
+			<div class='item'>
+				<div class='pic'>
+				</div>
+				<div class='text'>
+					aaaa
+				</div>
+			</div>
+			<div class='item'>
+				<div class='pic'>
+				</div>
+				<div class='text'>
+					aaaa
+				</div>
+			</div>
+		</div>
+		<div class='item2'>
+			<div class='item'>
+				<div class='pic'>
+				</div>
+				<div class='text'>
+					aaaa
+				</div>
+			</div>
+			<div class='item'>
+				<div class='pic'>
+				</div>
+				<div class='text'>
+					aaaa
+				</div>
+			</div>
+		</div>
+   	</body>
 </html>
